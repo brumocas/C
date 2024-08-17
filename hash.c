@@ -1,33 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define TAB_MAX 10000
+#define TABLE_SIZE 10
 
-unsigned long int sdbm( char *word );
+typedef struct {
+    int key;
+    int value;
+} HashItem;
 
-int main()
-{   
-    char word[100];
-    printf("Word to hash\n");
-    scanf("%s",word);
+typedef struct {
+    HashItem* items[TABLE_SIZE];
+} HashTable;
 
-    sdbm(word);
+int hashFunction(int key) {
+    return key % TABLE_SIZE;
 }
 
+void insert(HashTable* table, int key, int value) {
+    int hashIndex = hashFunction(key);
+    HashItem* item = (HashItem*)malloc(sizeof(HashItem));
+    item->key = key;
+    item->value = value;
+    table->items[hashIndex] = item;
+}
 
-unsigned long int sdbm( char *word )
-{
-     unsigned long h, i;
-    i = 0;
-    h = 5347;
+int search(HashTable* table, int key) {
+    int hashIndex = hashFunction(key);
+    if (table->items[hashIndex] != NULL)
+        return table->items[hashIndex]->value;
+    return -1;
+}
 
-    while(word[i])
-    {
-        h *= (31);
-        h ^= word[i++];
-        h &= 0xffffffff; // consideram-se apenas 32 bits 
-    }
+int main() {
+    HashTable* hashTable = (HashTable*)malloc(sizeof(HashTable));
+    insert(hashTable, 1, 10);
+    insert(hashTable, 2, 20);
+    insert(hashTable, 42, 30);
 
-    printf("%lu\n",h % TAB_MAX);
-    return h;
+    printf("Value for key 1: %d\n", search(hashTable, 1));
+    printf("Value for key 2: %d\n", search(hashTable, 2));
+    printf("Value for key 42: %d\n", search(hashTable, 42));
+    
+    return 0;
 }

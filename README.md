@@ -1,7 +1,3 @@
-Sure! Here's an updated README file that includes the new projects `dice.c`, `hash.c`, and `nextprime.c`:
-
----
-
 # MiniProjects
 
 ## Overview
